@@ -82,7 +82,7 @@ Based on user selection, dispatch one or more agents:
 
 **For "Full setup" or "CI only":**
 ```
-Task with subagent_type="ci-standards:ci-generator"
+Task with subagent_type="ci-standards:workflow-generator"
 Description: "Generate GitHub Actions workflow for [project-type]"
 Prompt: Include project analysis results from Step 1
 ```

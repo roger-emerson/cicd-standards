@@ -91,7 +91,7 @@ It's automatically available in all Claude Code sessions.
 
 ### Agents
 - `project-analyzer` - Detects project type and configuration
-- `ci-generator` - Generates standardized GitHub Actions workflow
+- `workflow-generator` - Generates standardized GitHub Actions workflow
 - `docs-generator` - Creates AI agent documentation
 
 ## Examples
