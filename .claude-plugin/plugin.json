@@ -1,0 +1,20 @@
+{
+  "name": "ci-standards",
+  "version": "1.0.0",
+  "description": "Standardize CI/CD workflows and AI agent documentation across all projects. Supports React+Vite, Next.js, and Hono with Cloudflare Workers deployment.",
+  "author": {
+    "name": "Roger Emerson",
+    "email": "roger@echeloncapital.group"
+  },
+  "keywords": [
+    "ci-cd",
+    "cloudflare",
+    "workers",
+    "github-actions",
+    "documentation",
+    "ai-agents",
+    "standards",
+    "automation"
+  ],
+  "license": "MIT"
+}
