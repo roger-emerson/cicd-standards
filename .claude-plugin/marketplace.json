@@ -1,0 +1,15 @@
+{
+  "name": "roger-emerson-ci-standards",
+  "description": "CI/CD standards enforcement plugin for Cloudflare projects",
+  "owner": {
+    "name": "Roger Emerson"
+  },
+  "plugins": [
+    {
+      "name": "ci-standards",
+      "version": "2.0.0",
+      "description": "Enforce, generate, and measure CI/CD standards across Cloudflare projects with DORA metrics",
+      "source": "./"
+    }
+  ]
+}
