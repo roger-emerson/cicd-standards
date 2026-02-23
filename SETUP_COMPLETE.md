@@ -1,4 +1,4 @@
-# CI Standards Plugin - Setup Complete ✅
+# CICD Standards Plugin - Setup Complete ✅
 
 **Created:** February 21, 2026
 **Author:** Roger Emerson
@@ -6,17 +6,17 @@
 
 ## Overview
 
-The ci-standards plugin is now fully implemented, validated, and ready for use across all your coding initiatives. This plugin serves as the **baseline template** for standardizing CI/CD workflows and AI agent documentation across any project.
+The cicd-standards plugin is now fully implemented, validated, and ready for use across all your coding initiatives. This plugin serves as the **baseline template** for standardizing CI/CD workflows and AI agent documentation across any project.
 
 ## What Was Created
 
 ### Plugin Structure
 ```
-~/.claude/plugins/ci-standards/
+~/.claude/plugins/cicd-standards/
 ├── .claude-plugin/
 │   └── plugin.json           # Plugin manifest (v1.0.0)
 ├── commands/
-│   └── ci-standards.md       # Main interactive command (180 lines)
+│   └── cicd-standards.md       # Main interactive command (180 lines)
 ├── agents/
 │   ├── project-analyzer.md   # Project detection & analysis (288 lines)
 │   ├── workflow-generator.md # GitHub Actions generation (375 lines)
@@ -37,7 +37,7 @@ The ci-standards plugin is now fully implemented, validated, and ready for use a
 ## Components Summary
 
 ### 1 Command
-- **`/ci-standards`** - Interactive workflow for project standardization
+- **`/cicd-standards`** - Interactive workflow for project standardization
   - Supports: Full setup, CI only, Docs only, Analyze
   - Smart project type detection
   - Safe file operations with backups
@@ -142,7 +142,7 @@ The plugin correctly:
 ```bash
 # In any project directory
 cc
-/ci-standards
+/cicd-standards
 ```
 
 The plugin will:
@@ -164,7 +164,7 @@ The plugin will:
 ## Next Steps
 
 ### Immediate Actions
-1. ✅ Plugin is installed at `~/.claude/plugins/ci-standards/`
+1. ✅ Plugin is installed at `~/.claude/plugins/cicd-standards/`
 2. ✅ Plugin will load on next Claude Code session
 3. ✅ Available globally for all projects
 
@@ -193,24 +193,24 @@ The plugin will:
 ## Files Modified in This Session
 
 ### Created Plugin Files (10 total)
-1. `~/.claude/plugins/ci-standards/.claude-plugin/plugin.json`
-2. `~/.claude/plugins/ci-standards/README.md`
-3. `~/.claude/plugins/ci-standards/LICENSE`
-4. `~/.claude/plugins/ci-standards/.gitignore`
-5. `~/.claude/plugins/ci-standards/commands/ci-standards.md`
-6. `~/.claude/plugins/ci-standards/agents/project-analyzer.md`
-7. `~/.claude/plugins/ci-standards/agents/workflow-generator.md`
-8. `~/.claude/plugins/ci-standards/agents/docs-generator.md`
-9. `~/.claude/plugins/ci-standards/skills/ci-patterns/SKILL.md`
-10. `~/.claude/plugins/ci-standards/skills/project-types/SKILL.md`
-11. `~/.claude/plugins/ci-standards/skills/ai-documentation/SKILL.md`
+1. `~/.claude/plugins/cicd-standards/.claude-plugin/plugin.json`
+2. `~/.claude/plugins/cicd-standards/README.md`
+3. `~/.claude/plugins/cicd-standards/LICENSE`
+4. `~/.claude/plugins/cicd-standards/.gitignore`
+5. `~/.claude/plugins/cicd-standards/commands/cicd-standards.md`
+6. `~/.claude/plugins/cicd-standards/agents/project-analyzer.md`
+7. `~/.claude/plugins/cicd-standards/agents/workflow-generator.md`
+8. `~/.claude/plugins/cicd-standards/agents/docs-generator.md`
+9. `~/.claude/plugins/cicd-standards/skills/ci-patterns/SKILL.md`
+10. `~/.claude/plugins/cicd-standards/skills/project-types/SKILL.md`
+11. `~/.claude/plugins/cicd-standards/skills/ai-documentation/SKILL.md`
 
 ### Repository Status
 ```bash
-cd ~/.claude/plugins/ci-standards/
+cd ~/.claude/plugins/cicd-standards/
 git init
 git add .
-git commit -m "Initial ci-standards plugin - baseline template for all nupraxus projects"
+git commit -m "Initial cicd-standards plugin - baseline template for all nupraxus projects"
 ```
 
 ## Key Achievements

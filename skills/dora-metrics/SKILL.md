@@ -142,7 +142,7 @@ Overall tier = the **lowest** individual metric tier. A team is only as strong a
 
 ## How CI Standards Help
 
-The ci-standards plugin directly impacts DORA metrics:
+The cicd-standards plugin directly impacts DORA metrics:
 
 | Standard | DORA Impact |
 |----------|-------------|
@@ -178,8 +178,8 @@ These are suggestions — implement gates based on your team's maturity and risk
 /ci-metrics --range 90d
 /ci-metrics --range 7d
 
-# Via ci-standards command
-/ci-standards metrics
+# Via cicd-standards command
+/cicd-standards metrics
 ```
 
 ## Interpreting Results

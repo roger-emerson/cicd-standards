@@ -1,12 +1,12 @@
 ---
 name: Enforcement Rules
-description: This skill activates when discussing CI/CD rule enforcement, compliance validation, hook behavior, or when a write is blocked by the ci-standards validator. Use when user mentions "enforcement", "blocked write", "compliance", "violations", "CI rules", or needs to understand why a file write was rejected.
+description: This skill activates when discussing CI/CD rule enforcement, compliance validation, hook behavior, or when a write is blocked by the cicd-standards validator. Use when user mentions "enforcement", "blocked write", "compliance", "violations", "CI rules", or needs to understand why a file write was rejected.
 version: 2.0.0
 ---
 
 # CI Standards Enforcement Rules
 
-Codified rules enforced by the ci-standards hooks. These rules are checked in real-time on every Write/Edit to CI config files and reported at session start via project audit.
+Codified rules enforced by the cicd-standards hooks. These rules are checked in real-time on every Write/Edit to CI config files and reported at session start via project audit.
 
 ## Severity Levels
 

@@ -51,7 +51,7 @@ Valid range formats: `7d`, `14d`, `30d`, `60d`, `90d`, `180d`, `365d`
 Use the Task tool to launch the `metrics-tracker` agent:
 
 ```
-Task with subagent_type="ci-standards:metrics-tracker"
+Task with subagent_type="cicd-standards:metrics-tracker"
 Description: "Calculate DORA metrics for current project"
 Prompt: Include the range parameter and any context from the current project
 ```
@@ -80,7 +80,7 @@ Authenticate: gh auth login
 **If no workflow history exists:**
 ```
 No deployment workflows found in this repository.
-Run /ci-standards ci to set up a standardized CI/CD workflow first.
+Run /cicd-standards ci to set up a standardized CI/CD workflow first.
 ```
 
 **If no production deployments found:**
@@ -101,4 +101,4 @@ Metrics will be calculated once deployments start flowing.
 
 - `dora-metrics` skill — DORA metric definitions and benchmarks
 - `ci-patterns` skill — CI/CD standards that improve DORA metrics
-- `/ci-standards` — Set up CI/CD workflows
+- `/cicd-standards` — Set up CI/CD workflows

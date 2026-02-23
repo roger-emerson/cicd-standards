@@ -1,13 +1,13 @@
 {
-  "name": "ci-standards",
+  "name": "cicd-standards",
   "version": "2.0.0",
   "description": "Enforce, generate, and measure CI/CD standards across Cloudflare projects with DORA metrics",
   "author": {
     "name": "Roger Emerson",
     "email": "roger@nupraxus.dev"
   },
-  "homepage": "https://github.com/roger-emerson/ci-standards",
-  "repository": "https://github.com/roger-emerson/ci-standards",
+  "homepage": "https://github.com/roger-emerson/cicd-standards",
+  "repository": "https://github.com/roger-emerson/cicd-standards",
   "keywords": [
     "ci-cd",
     "enforcement",

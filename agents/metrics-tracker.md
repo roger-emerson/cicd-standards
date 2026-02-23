@@ -67,7 +67,7 @@ gh run list --workflow=<id> --limit=200 --json status,conclusion,createdAt,updat
 ```
 
 If no workflows found, report gracefully:
-> No deployment workflows found. Run `/ci-standards ci` to set up a standardized workflow first.
+> No deployment workflows found. Run `/cicd-standards ci` to set up a standardized workflow first.
 
 ## Step 4: Calculate DORA Metrics
 
@@ -221,7 +221,7 @@ Present the dashboard in this exact format:
 ### No Workflow History
 If the repository has no GitHub Actions runs:
 - Report "No deployment data available"
-- Suggest running `/ci-standards ci` to set up workflows
+- Suggest running `/cicd-standards ci` to set up workflows
 - Show benchmark reference for context
 
 ### No Production Deployments

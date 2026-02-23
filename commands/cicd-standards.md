@@ -1,5 +1,5 @@
 ---
-name: ci-standards
+name: cicd-standards
 description: Standardize CI/CD workflows and AI documentation across projects
 argument-hint: "[full|ci|docs|analyze|metrics]"
 allowed-tools:
@@ -36,14 +36,14 @@ Analyze the current project and set up standardized CI/CD workflows and AI agent
 
 ```bash
 # Interactive mode (recommended)
-/ci-standards
+/cicd-standards
 
 # Direct mode with argument
-/ci-standards full
-/ci-standards ci
-/ci-standards docs
-/ci-standards analyze
-/ci-standards metrics
+/cicd-standards full
+/cicd-standards ci
+/cicd-standards docs
+/cicd-standards analyze
+/cicd-standards metrics
 ```
 
 ## Implementation Steps
@@ -53,7 +53,7 @@ Analyze the current project and set up standardized CI/CD workflows and AI agent
 Use the Task tool to launch the `project-analyzer` agent:
 
 ```
-Task with subagent_type="ci-standards:project-analyzer"
+Task with subagent_type="cicd-standards:project-analyzer"
 Description: "Analyze project structure and configuration"
 ```
 
@@ -85,21 +85,21 @@ Based on user selection, dispatch one or more agents:
 
 **For "Full setup" or "CI only":**
 ```
-Task with subagent_type="ci-standards:workflow-generator"
+Task with subagent_type="cicd-standards:workflow-generator"
 Description: "Generate GitHub Actions workflow for [project-type]"
 Prompt: Include project analysis results from Step 1
 ```
 
 **For "Full setup" or "Docs only":**
 ```
-Task with subagent_type="ci-standards:docs-generator"
+Task with subagent_type="cicd-standards:docs-generator"
 Description: "Generate AI documentation for [project-type]"
 Prompt: Include project analysis results from Step 1
 ```
 
 **For "Metrics":**
 ```
-Task with subagent_type="ci-standards:metrics-tracker"
+Task with subagent_type="cicd-standards:metrics-tracker"
 Description: "Calculate DORA metrics for current project"
 Prompt: Default range 30 days unless user specified otherwise
 ```
@@ -181,7 +181,7 @@ Backups created with .bak extension.
 - Ensure package.json exists for accurate detection
 - Review diffs carefully before applying
 - Keep .bak files until you verify everything works
-- Run `/ci-standards analyze` first if unsure
+- Run `/cicd-standards analyze` first if unsure
 
 ## See Also
 

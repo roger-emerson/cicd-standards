@@ -17,7 +17,7 @@ The user wants CI/CD setup. This is a perfect case for workflow-generator to cre
 assistant: "I'll use the workflow-generator agent to set up your CI/CD pipeline."
 </example>
 <example>Context: User wants to update their existing workflow to match current standards
-user: "Update my deploy.yml to follow the latest ci-standards pattern"
+user: "Update my deploy.yml to follow the latest cicd-standards pattern"
 assistant: "I'll update your workflow to match the standardized 3-job pattern."
 <commentary>
 The user wants to modernize their workflow. The workflow-generator should create a backup of the existing file and generate the new standardized version.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# CI Standards — Session Start Audit
+# CICD Standards — Session Start Audit
 # Scans the current project for CI config files and reports compliance status.
 # Non-blocking (informational only) — provides context to Claude at session start.
 #
@@ -136,7 +136,7 @@ fi
 # Output as additionalContext JSON
 cat <<EOF
 {
-  "additionalContext": "CI Standards Audit — ${STATUS} (Score: ${SCORE}%)\n\nCompliant (${#COMPLIANT[@]}):$(for item in "${COMPLIANT[@]+"${COMPLIANT[@]}"}"; do echo "\n  ✅ $item"; done)\n\nViolations (${#VIOLATIONS[@]}):$(for item in "${VIOLATIONS[@]+"${VIOLATIONS[@]}"}"; do echo "\n  ❌ $item"; done)\n\nWarnings (${#WARNINGS[@]}):$(for item in "${WARNINGS[@]+"${WARNINGS[@]}"}"; do echo "\n  ⚠️ $item"; done)\n\nMissing (${#MISSING[@]}):$(for item in "${MISSING[@]+"${MISSING[@]}"}"; do echo "\n  📋 $item"; done)\n\nRun /ci-standards to fix issues."
+  "additionalContext": "CICD Standards Audit — ${STATUS} (Score: ${SCORE}%)\n\nCompliant (${#COMPLIANT[@]}):$(for item in "${COMPLIANT[@]+"${COMPLIANT[@]}"}"; do echo "\n  ✅ $item"; done)\n\nViolations (${#VIOLATIONS[@]}):$(for item in "${VIOLATIONS[@]+"${VIOLATIONS[@]}"}"; do echo "\n  ❌ $item"; done)\n\nWarnings (${#WARNINGS[@]}):$(for item in "${WARNINGS[@]+"${WARNINGS[@]}"}"; do echo "\n  ⚠️ $item"; done)\n\nMissing (${#MISSING[@]}):$(for item in "${MISSING[@]+"${MISSING[@]}"}"; do echo "\n  📋 $item"; done)\n\nRun /cicd-standards to fix issues."
 }
 EOF
 

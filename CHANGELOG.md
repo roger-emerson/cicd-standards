@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the ci-standards plugin will be documented in this file.
+All notable changes to the cicd-standards plugin will be documented in this file.
 
 ## [2.0.0] - 2026-02-22
 
@@ -33,7 +33,7 @@ All notable changes to the ci-standards plugin will be documented in this file.
 
 ### Changed
 - `plugin.json` — Bumped to v2.0.0, updated description, added keywords
-- `commands/ci-standards.md` — Added `metrics` as 5th argument option, updated See Also
+- `commands/cicd-standards.md` — Added `metrics` as 5th argument option, updated See Also
 - `agents/project-analyzer.md` — Extended detection for 4 new project types
 - `agents/workflow-generator.md` — Added deploy templates for Pages, DO, R2, and generic
 - `agents/docs-generator.md` — Added framework-specific intelligence for all new types
@@ -45,7 +45,7 @@ All notable changes to the ci-standards plugin will be documented in this file.
 
 ### Added
 - Initial release
-- `/ci-standards` command with interactive workflow
+- `/cicd-standards` command with interactive workflow
 - 3 project types: React+Vite, Next.js+OpenNext, Hono
 - 3-job CI pattern (resolve-env → ci-gate → deploy)
 - AI documentation generation (CLAUDE.md + AI_AGENT_GUIDE.md)

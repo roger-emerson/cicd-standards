@@ -1,4 +1,4 @@
-# CI Standards Plugin
+# CICD Standards Plugin
 
 **Enforce, generate, and measure CI/CD standards across projects** — with real-time violation blocking, DORA metrics, and support for 7 project architectures.
 
@@ -50,19 +50,19 @@ This plugin provides three layers of CI/CD standardization:
 ### Set up a new project:
 
 ```bash
-/ci-standards
+/cicd-standards
 ```
 
 ### Generate CI/CD only:
 
 ```bash
-/ci-standards ci
+/cicd-standards ci
 ```
 
 ### Generate documentation only:
 
 ```bash
-/ci-standards docs
+/cicd-standards docs
 ```
 
 ### View DORA metrics:
@@ -75,32 +75,25 @@ This plugin provides three layers of CI/CD standardization:
 ### Analyze project (report only):
 
 ```bash
-/ci-standards analyze
+/cicd-standards analyze
 ```
 
 ## Installation
 
-### From nupraxus marketplace:
+### From marketplace:
 
 ```bash
 # Add marketplace (one-time)
-/plugin marketplace add nupraxus/claude-plugins-marketplace
+/plugin marketplace add roger-emerson/cicd-standards
 
 # Install plugin
-/plugin install ci-standards@nupraxus-plugins
-```
-
-### Manual installation:
-
-```bash
-# Clone to plugins directory
-git clone https://github.com/nupraxus/ci-standards-plugin.git ~/.claude/plugins/ci-standards
+/plugin install cicd-standards@roger-emerson-cicd-standards
 ```
 
 ## Components
 
 ### Commands
-- `/ci-standards` — Interactive setup workflow (full, ci, docs, analyze, metrics)
+- `/cicd-standards` — Interactive setup workflow (full, ci, docs, analyze, metrics)
 - `/ci-metrics` — DORA metrics dashboard with configurable range
 
 ### Agents
@@ -170,4 +163,4 @@ MIT License — Use freely in any project.
 
 ## Author
 
-Roger Emerson — [nupraxus](https://github.com/nupraxus)
+Roger Emerson — [roger-emerson](https://github.com/roger-emerson)
