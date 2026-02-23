@@ -1,7 +1,7 @@
 ---
 name: CI/CD Patterns
 description: This skill activates when setting up CI/CD workflows, configuring GitHub Actions, deploying to Cloudflare Workers, or standardizing deployment processes. Use when user mentions "CI/CD", "GitHub Actions", "deployment workflow", "Cloudflare deploy", or needs help with continuous integration patterns.
-version: 1.0.0
+version: 2.0.0
 ---
 
 # CI/CD Patterns for Cloudflare Workers
@@ -305,6 +305,73 @@ env:
 - No static assets
 - Fastest deploy times
 
+### Cloudflare Pages (Astro / SolidStart / Remix)
+
+**Build command**: `npm run build` (framework builds to `dist/`)
+**Deploy command**: `npx wrangler pages deploy dist --project-name=<name>`
+**Special notes**:
+- Uses `wrangler pages deploy` NOT `wrangler deploy`
+- Build output directory varies by framework
+- Pages Functions automatically deployed from `functions/` directory
+- Environment handling via Pages project settings
+
+**Deploy job adaptation:**
+```yaml
+- name: Deploy to Cloudflare Pages
+  run: npx wrangler pages deploy dist --project-name=${{ vars.PAGES_PROJECT_NAME || 'project-name' }}
+  env:
+    CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+```
+
+### Workers + Durable Objects
+
+**Build command**: `npm run build` (if applicable)
+**Deploy command**: `npx wrangler deploy`
+**Special notes**:
+- Durable Object migrations run automatically on deploy
+- Migrations declared in `wrangler.toml` `[[migrations]]`
+- First deploy creates DO classes; subsequent deploys can add/rename/delete
+- No additional CI steps needed — Wrangler handles migrations
+
+**Important**: Durable Object migrations are **irreversible**. The deploy step inherently handles this, but be aware that rolling back a DO migration requires a new forward migration.
+
+### Workers + R2
+
+**Build command**: `npm run build` (if applicable)
+**Deploy command**: `npx wrangler deploy`
+**Special notes**:
+- R2 buckets must be created before first deploy (via dashboard or `wrangler r2 bucket create`)
+- Wrangler handles R2 bindings automatically from `wrangler.toml`
+- No extra CI steps for R2 — bindings are declarative
+
+### Generic (Non-Cloudflare)
+
+**Build command**: `npm run build`
+**Deploy command**: `npm run deploy` (project-specific)
+**Special notes**:
+- Same 3-job pattern applies
+- Deploy job uses whatever mechanism the project defines
+- No Cloudflare secrets needed
+- May use Docker, npm publish, rsync, or platform CLI
+
+**Deploy job adaptation:**
+```yaml
+- name: Deploy
+  run: npm run deploy
+  env:
+    # Project-specific secrets
+    DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+```
+
+**Docker variant:**
+```yaml
+- name: Build and push Docker image
+  run: |
+    docker build -t ${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}:${{ github.sha }} .
+    docker push ${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+```
+
 ## Wrangler Configuration
 
 **Essential settings** in `wrangler.toml`:
@@ -404,7 +471,9 @@ jobs:
 
 ## References
 
-- See `templates/deploy.yml` for complete workflow examples
 - See `project-types` skill for project-specific configurations
+- See `enforcement-rules` skill for compliance enforcement
+- See `dora-metrics` skill for measuring CI/CD performance
 - GitHub Actions docs: https://docs.github.com/actions
 - Wrangler docs: https://developers.cloudflare.com/workers/wrangler/
+- Cloudflare Pages docs: https://developers.cloudflare.com/pages

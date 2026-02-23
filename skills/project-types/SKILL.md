@@ -1,14 +1,14 @@
 ---
 name: Project Types
 description: This skill activates when discussing project architecture, framework selection, TypeScript configuration, or Cloudflare Workers setup. Use when user mentions "React Vite", "Next.js", "Hono", "project structure", "TypeScript config", "wrangler setup", or needs guidance on project organization.
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Project Architecture Types
 
 Understand the three supported project architectures for Cloudflare Workers deployment, their configurations, and when to use each.
 
-## Supported Architectures
+## Supported Architectures (7 Types)
 
 ### 1. React + Vite + Cloudflare Workers
 
@@ -75,6 +75,92 @@ Understand the three supported project architectures for Cloudflare Workers depl
 - Fastest cold starts
 - No frontend bundling
 - Pure serverless API
+
+### 4. Cloudflare Pages (Astro / SolidStart / Remix)
+
+**Best for**: Static-first sites with server-side features via Pages Functions
+
+**Stack**:
+- **Framework**: Astro 5+, SolidStart, or Remix
+- **Adapter**: `@astrojs/cloudflare`, `solid-start-cloudflare-pages`, or `@remix-run/cloudflare-pages`
+- **Deploy**: Cloudflare Pages (not Workers)
+- **Functions**: Pages Functions for server-side logic
+
+**When to use**:
+- Content-heavy websites with partial server rendering
+- Multi-framework (Astro islands)
+- Projects preferring Pages over Workers
+- Sites with built-in asset optimization
+
+**Key characteristics**:
+- Uses `wrangler pages deploy` instead of `wrangler deploy`
+- Static assets served from Cloudflare CDN
+- Pages Functions for API routes
+- Automatic preview deployments on PRs
+
+### 5. Workers + Durable Objects
+
+**Best for**: Stateful serverless applications requiring consistency guarantees
+
+**Stack**:
+- **Framework**: Hono or raw Worker
+- **State**: Durable Objects for coordination, consistency, and real-time
+- **Storage**: Durable Object storage, D1, or KV
+- **Runtime**: Cloudflare Workers
+
+**When to use**:
+- Real-time collaboration features
+- Rate limiting with strong consistency
+- WebSocket connections with state
+- Distributed locking or coordination
+
+**Key characteristics**:
+- Durable Objects declared in `wrangler.toml` `[durable_objects]`
+- Migration steps required in deploy job
+- State persists across requests within an object
+- Bindings connect Workers to Durable Objects
+
+### 6. Workers + R2
+
+**Best for**: Storage-heavy applications with object storage needs
+
+**Stack**:
+- **Framework**: Hono or raw Worker
+- **Storage**: R2 for objects/files, optionally D1 for metadata
+- **Runtime**: Cloudflare Workers
+
+**When to use**:
+- File upload/download services
+- Image processing pipelines
+- Backup and archival systems
+- S3-compatible storage needs
+
+**Key characteristics**:
+- R2 buckets declared in `wrangler.toml` `[[r2_buckets]]`
+- No egress fees on reads
+- S3-compatible API available
+- Bucket validation in deploy workflow
+
+### 7. Generic (Non-Cloudflare)
+
+**Best for**: Projects not deploying to Cloudflare — standard Node.js, Docker, or any platform
+
+**Stack**:
+- **Framework**: Any (Express, Fastify, NestJS, plain Node.js, etc.)
+- **Deploy**: Docker, npm publish, or custom deploy scripts
+- **Runtime**: Node.js, Docker, or any platform
+
+**When to use**:
+- Non-Cloudflare projects that still benefit from the 3-job CI pattern
+- Docker-based deployments
+- npm package publishing
+- Any project wanting standardized CI structure
+
+**Key characteristics**:
+- Same 3-job pattern (resolve-env → ci-gate → deploy)
+- Deploy job uses project's own deploy mechanism
+- No Cloudflare-specific configuration
+- Wrangler not required
 
 ## Configuration Patterns
 
@@ -387,6 +473,163 @@ workers_dev = false
 }
 ```
 
+### Cloudflare Pages (Astro)
+
+#### Directory Structure
+
+```
+project/
+├── src/
+│   ├── pages/                # Astro pages (file-based routing)
+│   ├── components/           # UI components (Astro, React, etc.)
+│   ├── layouts/              # Page layouts
+│   └── content/              # Content collections
+├── public/                   # Static assets
+├── functions/                # Pages Functions (optional)
+├── .github/workflows/
+│   └── deploy.yml
+├── astro.config.mjs
+├── tsconfig.json
+├── wrangler.toml             # Pages config
+└── package.json
+```
+
+#### Wrangler Configuration (Pages)
+
+```toml
+name = "project-name"
+pages_build_output_dir = "./dist"
+compatibility_date = "2024-12-01"
+```
+
+#### Package.json Scripts
+
+```json
+{
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check && tsc --noEmit",
+    "deploy": "wrangler pages deploy dist"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "@astrojs/cloudflare": "^12.0.0"
+  }
+}
+```
+
+### Workers + Durable Objects
+
+#### Directory Structure
+
+```
+project/
+├── src/
+│   ├── index.ts              # Worker entry (routes requests)
+│   ├── durable-objects/      # Durable Object classes
+│   │   └── counter.ts        # Example DO class
+│   └── routes/               # API routes
+├── .github/workflows/
+│   └── deploy.yml
+├── tsconfig.json
+├── wrangler.toml
+└── package.json
+```
+
+#### Wrangler Configuration
+
+```toml
+name = "project-name"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+workers_dev = false
+
+[durable_objects]
+bindings = [
+  { name = "COUNTER", class_name = "Counter" }
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["Counter"]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[env.development]
+name = "project-name-dev"
+workers_dev = false
+```
+
+### Workers + R2
+
+#### Directory Structure
+
+```
+project/
+├── src/
+│   ├── index.ts              # Worker entry
+│   └── routes/               # API routes (upload, download, list)
+├── .github/workflows/
+│   └── deploy.yml
+├── tsconfig.json
+├── wrangler.toml
+└── package.json
+```
+
+#### Wrangler Configuration
+
+```toml
+name = "project-name"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+workers_dev = false
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "project-bucket"
+
+[env.development]
+name = "project-name-dev"
+workers_dev = false
+
+[[env.development.r2_buckets]]
+binding = "BUCKET"
+bucket_name = "project-bucket-dev"
+```
+
+### Generic (Non-Cloudflare)
+
+#### Directory Structure
+
+```
+project/
+├── src/                      # Application source
+├── tests/                    # Test suite
+├── .github/workflows/
+│   └── deploy.yml
+├── Dockerfile                # Optional — for Docker-based deploy
+├── tsconfig.json
+└── package.json
+```
+
+#### Package.json Scripts
+
+```json
+{
+  "scripts": {
+    "dev": "node --watch src/index.ts",
+    "build": "tsc",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "deploy": "echo 'Add your deploy script here'"
+  }
+}
+```
+
 ## Project Detection Logic
 
 ### How to Identify Project Type
@@ -414,6 +657,53 @@ workers_dev = false
 ✓ wrangler.toml exists with main entry
 ✓ No assets configuration
 ```
+
+**Cloudflare Pages (Astro)**:
+```bash
+✓ package.json has "astro" dependency
+✓ package.json has "@astrojs/cloudflare" adapter
+✓ astro.config.mjs/ts exists
+✓ src/pages/ directory exists
+```
+
+**Cloudflare Pages (SolidStart/Remix)**:
+```bash
+✓ package.json has "solid-start" or "@remix-run/cloudflare-pages"
+✓ Cloudflare Pages adapter installed
+✓ app.config.ts or remix.config.js exists
+```
+
+**Workers + Durable Objects**:
+```bash
+✓ wrangler.toml has [durable_objects] section
+✓ wrangler.toml has [[migrations]] section
+✓ Source contains Durable Object class exports
+```
+
+**Workers + R2**:
+```bash
+✓ wrangler.toml has [[r2_buckets]] section
+✓ R2 binding used in worker code
+```
+
+**Generic (Non-Cloudflare)**:
+```bash
+✗ No wrangler.toml and no wrangler.jsonc
+✗ No @cloudflare/* dependencies
+✓ package.json exists
+✓ Has build/test scripts
+```
+
+### Detection Priority
+
+When multiple indicators match, use this priority order:
+1. Pages (Astro/SolidStart/Remix) — if Pages adapter found
+2. Next.js + OpenNext — if next + opennext found
+3. React + Vite + Workers — if vite + react + wrangler found
+4. Workers + Durable Objects — if durable_objects in wrangler
+5. Workers + R2 — if r2_buckets in wrangler
+6. Hono Only — if hono dependency
+7. Generic — fallback when no Cloudflare indicators
 
 ### Ambiguous Cases
 
@@ -532,9 +822,13 @@ Only deployment command changes based on project type.
 
 ## References
 
-- See `templates/` for complete project examples
 - See `ci-patterns` skill for workflow details
+- See `enforcement-rules` skill for compliance rules
 - Vite docs: https://vitejs.dev
 - Next.js docs: https://nextjs.org
 - Hono docs: https://hono.dev
+- Astro docs: https://astro.build
 - OpenNext docs: https://opennext.js.org
+- Cloudflare Pages: https://developers.cloudflare.com/pages
+- Durable Objects: https://developers.cloudflare.com/durable-objects
+- R2: https://developers.cloudflare.com/r2

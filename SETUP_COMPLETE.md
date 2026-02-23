@@ -51,7 +51,7 @@ The ci-standards plugin is now fully implemented, validated, and ready for use a
 
 2. **workflow-generator** (375 lines)
    - Creates GitHub Actions workflows
-   - Implements ECG 3-job pattern
+   - Implements nupraxus 3-job pattern
    - Customizes per project type
    - Ensures critical rules compliance
 
@@ -170,7 +170,7 @@ The plugin will:
 
 ### Recommended Usage
 1. **Test on a new project** - Apply standards to a fresh project
-2. **Update existing projects** - Bring other ECG repos into compliance
+2. **Update existing projects** - Bring other nupraxus repos into compliance
 3. **Share with OpenClaw** - Your personal AI agent can now use this baseline template
 4. **Iterate based on experience** - Refine agents and documentation as needed
 
@@ -185,7 +185,7 @@ The plugin will:
 ✅ **Global availability** - Plugin works across all projects
 ✅ **Multi-project type support** - React+Vite, Next.js, Hono
 ✅ **Both setup and update** - Handles new and existing projects
-✅ **Baseline template** - Standardizes all ECG coding initiatives
+✅ **Baseline template** - Standardizes all nupraxus coding initiatives
 ✅ **AI agent friendly** - Clear documentation for OpenClaw
 ✅ **Production quality** - 95/100 validation score
 ✅ **Tested and verified** - Works correctly on canopy-lawn
@@ -210,13 +210,13 @@ The plugin will:
 cd ~/.claude/plugins/ci-standards/
 git init
 git add .
-git commit -m "Initial ci-standards plugin - baseline template for all ECG projects"
+git commit -m "Initial ci-standards plugin - baseline template for all nupraxus projects"
 ```
 
 ## Key Achievements
 
 1. **Standardization Automated** - No more manual CI/CD setup
-2. **Knowledge Codified** - ECG patterns documented as reusable skills
+2. **Knowledge Codified** - nupraxus patterns documented as reusable skills
 3. **AI Agent Ready** - OpenClaw can now understand and standardize any project
 4. **Quality Assured** - Validated and tested before deployment
 5. **Future Proof** - Extensible architecture for new project types
@@ -224,10 +224,10 @@ git commit -m "Initial ci-standards plugin - baseline template for all ECG proje
 ## Contact & Support
 
 **Author:** Roger Emerson
-**Email:** roger@echeloncapital.group
-**Plugin Version:** 1.0.0
+**Email:** roger@nupraxus.dev
+**Plugin Version:** 2.0.0
 **License:** MIT
 
 ---
 
-**Status:** ✅ Production Ready - Ready to standardize all ECG coding initiatives
+**Status:** ✅ Production Ready - Ready to standardize all nupraxus coding initiatives

@@ -1,7 +1,7 @@
 ---
 name: ci-standards
 description: Standardize CI/CD workflows and AI documentation across projects
-argument-hint: "[full|ci|docs|analyze]"
+argument-hint: "[full|ci|docs|analyze|metrics]"
 allowed-tools:
   - Read
   - Write
@@ -28,6 +28,7 @@ Analyze the current project and set up standardized CI/CD workflows and AI agent
    - **CI only**: GitHub Actions workflow
    - **Docs only**: CLAUDE.md + AI_AGENT_GUIDE.md
    - **Analyze**: Report only, no changes
+   - **Metrics**: DORA metrics dashboard (deployment frequency, lead time, failure rate, MTTR)
 
 3. **Validates** and shows diffs before applying changes
 
@@ -42,6 +43,7 @@ Analyze the current project and set up standardized CI/CD workflows and AI agent
 /ci-standards ci
 /ci-standards docs
 /ci-standards analyze
+/ci-standards metrics
 ```
 
 ## Implementation Steps
@@ -74,6 +76,7 @@ Options:
 - CI/CD workflow only
 - Documentation only
 - Analyze project (report only)
+- Metrics dashboard (DORA metrics)
 ```
 
 ### Step 3: Dispatch Appropriate Agents
@@ -92,6 +95,13 @@ Prompt: Include project analysis results from Step 1
 Task with subagent_type="ci-standards:docs-generator"
 Description: "Generate AI documentation for [project-type]"
 Prompt: Include project analysis results from Step 1
+```
+
+**For "Metrics":**
+```
+Task with subagent_type="ci-standards:metrics-tracker"
+Description: "Calculate DORA metrics for current project"
+Prompt: Default range 30 days unless user specified otherwise
 ```
 
 ### Step 4: Review and Confirm
@@ -178,3 +188,6 @@ Backups created with .bak extension.
 - `ci-patterns` skill - CI/CD workflow knowledge
 - `project-types` skill - Project architecture patterns
 - `ai-documentation` skill - Documentation standards
+- `enforcement-rules` skill - Codified enforcement rules
+- `dora-metrics` skill - DORA metric definitions and benchmarks
+- `/ci-metrics` command - DORA metrics dashboard

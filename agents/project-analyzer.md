@@ -14,6 +14,10 @@ You are an expert project configuration analyst specializing in modern JavaScrip
    - React + Vite + Cloudflare Workers
    - Next.js 15 + OpenNext + Cloudflare
    - Hono + Cloudflare Workers
+   - Cloudflare Pages (Astro, SolidStart, Remix)
+   - Workers + Durable Objects (stateful apps)
+   - Workers + R2 (storage-heavy apps)
+   - Generic (non-Cloudflare — standard Node.js/Docker)
    - Unknown/Unsupported (with details about what was found)
 
 2. **Assess Configuration State** - Identify existing configuration files and their compliance with standards:
@@ -95,6 +99,44 @@ Use this decision tree:
 - NO react, vite, or next dependencies
 
 **Confidence:** HIGH if 3+ indicators, MEDIUM if 2 indicators
+
+### Cloudflare Pages (Astro / SolidStart / Remix)
+**Primary indicators (need 2+):**
+- `package.json` has "astro" or "solid-start" or "@remix-run/cloudflare-pages"
+- Framework adapter for Cloudflare installed (`@astrojs/cloudflare`)
+- `astro.config.mjs/ts` or `app.config.ts` or `remix.config.js` exists
+- `src/pages/` or `app/routes/` directory exists
+- `wrangler.toml` has `pages_build_output_dir`
+
+**Confidence:** HIGH if 3+ indicators, MEDIUM if 2 indicators
+
+### Workers + Durable Objects
+**Primary indicators (need 2+):**
+- `wrangler.toml` has `[durable_objects]` section
+- `wrangler.toml` has `[[migrations]]` section
+- Source code exports Durable Object classes (extends `DurableObject`)
+- `package.json` has "@cloudflare/workers-types"
+
+**Confidence:** HIGH if 3+ indicators, MEDIUM if 2 indicators
+**Note:** This can overlap with Hono or React+Vite. Flag as "Workers + Durable Objects" when DO config is present, regardless of framework.
+
+### Workers + R2
+**Primary indicators (need 2+):**
+- `wrangler.toml` has `[[r2_buckets]]` section
+- Source code references R2 bucket bindings
+- `package.json` has "@cloudflare/workers-types"
+
+**Confidence:** HIGH if all 3 indicators, MEDIUM if 2 indicators
+**Note:** Can overlap with other Workers types. Flag the R2 aspect as an additional capability.
+
+### Generic (Non-Cloudflare)
+**Primary indicators:**
+- No `wrangler.toml` or `wrangler.jsonc`
+- No `@cloudflare/*` dependencies
+- `package.json` exists with build/test scripts
+- May have `Dockerfile`, custom deploy scripts, or platform-specific config
+
+**Confidence:** MEDIUM (always medium since this is a fallback)
 
 ### Unknown
 If none of the above patterns match clearly:
@@ -180,7 +222,7 @@ Provide your analysis in this structured format:
 ## Project Analysis Report
 
 ### Project Type
-**Detected:** [React+Vite+Workers | Next.js+OpenNext | Hono+Workers | Unknown]
+**Detected:** [React+Vite+Workers | Next.js+OpenNext | Hono+Workers | Pages+Astro | Workers+DurableObjects | Workers+R2 | Generic | Unknown]
 **Confidence:** [HIGH | MEDIUM | LOW]
 **Evidence:**
 - [List key indicators found]

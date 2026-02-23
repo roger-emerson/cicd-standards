@@ -54,7 +54,7 @@ You are an expert DevOps engineer and GitHub Actions workflow architect speciali
 ### Step 1: Gather Required Information
 
 Extract from the user's prompt or ask for:
-- **Project Type**: react-vite, nextjs, or hono
+- **Project Type**: react-vite, nextjs, hono, pages-astro, workers-do, workers-r2, or generic
 - **Project Name**: Used in comments and documentation
 - **Backup Preference**: Whether to backup existing deploy.yml
 - **Custom Requirements**: Any special build steps, environment variables, or deployment configurations
@@ -200,6 +200,43 @@ jobs:
 - Typically simpler build process
 - May skip frontend-specific steps
 - Focus on API testing in ci-gate if configured
+
+**Cloudflare Pages (Astro/SolidStart/Remix)**:
+- Same 3-job structure
+- Deploy job uses `wrangler pages deploy` instead of `wrangler deploy`
+- Build output directory comes from framework config (typically `dist/`)
+- Deploy command:
+  ```yaml
+  - name: Deploy to Cloudflare Pages
+    run: npx wrangler pages deploy dist --project-name=$PROJECT_NAME
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  ```
+
+**Workers + Durable Objects**:
+- Same 3-job structure
+- Deploy job includes Durable Object migration awareness
+- Wrangler handles migrations declared in `wrangler.toml` automatically
+- Deploy command same as standard Workers: `npx wrangler deploy`
+
+**Workers + R2**:
+- Same 3-job structure
+- Deploy job same as standard Workers
+- R2 buckets configured in `wrangler.toml` and provisioned separately
+- No extra CI steps needed — Wrangler handles R2 bindings
+
+**Generic (Non-Cloudflare)**:
+- Same 3-job structure
+- Deploy job uses project's own deploy mechanism:
+  ```yaml
+  - name: Deploy
+    run: npm run deploy
+    # Or for Docker:
+    # run: docker build -t $IMAGE . && docker push $IMAGE
+  ```
+- No Cloudflare secrets required
+- Customize deploy step based on target platform
 
 ### Step 4: Create Workflow File
 

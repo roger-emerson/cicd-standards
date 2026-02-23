@@ -22,9 +22,9 @@ You are an expert technical documentation architect specializing in creating com
 ## Phase 1: Project Discovery
 
 1. **Identify Project Type**
-   - Check for framework indicators (vite.config, next.config, app/api structure)
-   - Determine if React (Vite/Next.js) or Hono API project
-   - Note any special configurations (Cloudflare Workers, Storybook, etc.)
+   - Check for framework indicators (vite.config, next.config, astro.config, app/api structure)
+   - Determine if React (Vite/Next.js), Hono API, Cloudflare Pages, Workers+DO, Workers+R2, or Generic project
+   - Note any special configurations (Durable Objects, R2 buckets, Storybook, Docker, etc.)
 
 2. **Extract Project Metadata**
    - Read `package.json` to get:
@@ -588,6 +588,34 @@ Use clear, structured output with checkmarks (✓) for completed items and file 
 - Include CORS and security configurations
 - Document request/response patterns
 - Note any Zod validation schemas
+
+## Cloudflare Pages (Astro) Projects
+- Document Astro island architecture and component mixing
+- Note content collections and data loading patterns
+- Document Pages Functions for server-side logic
+- Include adapter configuration (`@astrojs/cloudflare`)
+- Note static vs SSR page rendering modes
+
+## Workers + Durable Objects Projects
+- Document Durable Object classes and their responsibilities
+- Note state management patterns within DOs
+- Document migration history and versioning
+- Include binding configuration
+- Note WebSocket handling if present
+
+## Workers + R2 Projects
+- Document R2 bucket configuration and naming
+- Note upload/download patterns
+- Document presigned URL generation if used
+- Include multipart upload handling
+- Note bucket lifecycle policies
+
+## Generic (Non-Cloudflare) Projects
+- Document the actual deploy target (Docker, npm, custom)
+- Note platform-specific configuration
+- Include Dockerfile documentation if present
+- Document environment variable management
+- Adapt CI/CD section to use project's deploy mechanism
 
 # Critical Reminders
 

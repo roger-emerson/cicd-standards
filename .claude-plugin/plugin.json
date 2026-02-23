@@ -1,20 +1,25 @@
 {
   "name": "ci-standards",
-  "version": "1.0.0",
-  "description": "Standardize CI/CD workflows and AI agent documentation across all projects. Supports React+Vite, Next.js, and Hono with Cloudflare Workers deployment.",
+  "version": "2.0.0",
+  "description": "Enforce, generate, and measure CI/CD standards across Cloudflare projects with DORA metrics",
   "author": {
     "name": "Roger Emerson",
-    "email": "roger@echeloncapital.group"
+    "email": "roger@nupraxus.dev"
   },
+  "homepage": "https://github.com/roger-emerson/ci-standards",
+  "repository": "https://github.com/roger-emerson/ci-standards",
   "keywords": [
     "ci-cd",
+    "enforcement",
+    "dora-metrics",
     "cloudflare",
     "workers",
+    "pages",
     "github-actions",
+    "shift-left",
     "documentation",
     "ai-agents",
-    "standards",
-    "automation"
+    "standards"
   ],
   "license": "MIT"
 }

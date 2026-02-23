@@ -1,138 +1,173 @@
 # CI Standards Plugin
 
-**Baseline template for all coding initiatives** - standardize CI/CD workflows and AI agent documentation across any project.
+**Enforce, generate, and measure CI/CD standards across projects** — with real-time violation blocking, DORA metrics, and support for 7 project architectures.
 
 ## Overview
 
-This plugin automates the setup of:
-- ✅ **GitHub Actions CI/CD** - 3-job workflow (resolve-env → ci-gate → deploy)
-- ✅ **AI Documentation** - CLAUDE.md + AI agent operational guides
-- ✅ **TypeScript Configuration** - Consistent type checking across projects
-- ✅ **Cloudflare Workers** - Deployment configuration and patterns
+This plugin provides three layers of CI/CD standardization:
+
+1. **Enforce** — Hooks block violations in real-time before files are written
+2. **Generate** — Agents create standardized workflows, configs, and documentation
+3. **Measure** — DORA metrics dashboard tracks delivery performance
+
+### What's Enforced
+
+- ❌ **NEVER** `continue-on-error: true` (blocks write)
+- ❌ **NEVER** `workers_dev = true` (blocks write)
+- ❌ **NEVER** Node version other than 22 (blocks write)
+- ✅ **ALWAYS** 3-job pattern (resolve-env → ci-gate → deploy)
+- ✅ **ALWAYS** timeouts on all jobs
+- ✅ **ALWAYS** typecheck before deploy
+
+### What's Generated
+
+- `.github/workflows/deploy.yml` — Standardized 3-job CI/CD workflow
+- `CLAUDE.md` — AI agent project overview
+- `docs/AI_AGENT_GUIDE.md` — Operational guide with critical rules
+- TypeScript and Wrangler configuration
+
+### What's Measured
+
+- **Deployment Frequency** — How often you ship
+- **Lead Time for Changes** — How fast you ship
+- **Change Failure Rate** — How reliable your shipping is
+- **Mean Time to Recovery** — How fast you recover from failures
 
 ## Supported Project Types
 
-1. **React + Vite + Cloudflare Workers**
-   - Modern React apps with serverless backend
-   - Example: Single-page apps with API routes
-
-2. **Next.js 15 + OpenNext + Cloudflare**
-   - Full-stack Next.js apps on Cloudflare
-   - Server-side rendering + edge deployment
-
-3. **Hono + Cloudflare Workers**
-   - Lightweight API-only projects
-   - Ultra-fast serverless APIs
+| # | Type | Deploy Command | Key Feature |
+|---|------|---------------|-------------|
+| 1 | React + Vite + Workers | `npx wrangler deploy` | SPA with API backend |
+| 2 | Next.js 15 + OpenNext | `opennextjs-cloudflare deploy` | SSR/SSG on edge |
+| 3 | Hono + Workers | `npx wrangler deploy` | Lightweight API |
+| 4 | Cloudflare Pages (Astro) | `wrangler pages deploy` | Static-first sites |
+| 5 | Workers + Durable Objects | `npx wrangler deploy` | Stateful apps |
+| 6 | Workers + R2 | `npx wrangler deploy` | Storage-heavy apps |
+| 7 | Generic (any platform) | `npm run deploy` | Non-Cloudflare fallback |
 
 ## Quick Start
 
-### Set up a new project or update existing one:
+### Set up a new project:
 
 ```bash
 /ci-standards
 ```
 
-The command will:
-1. Analyze your project type
-2. Show you what will be created/updated
-3. Generate standardized CI/CD and documentation
+### Generate CI/CD only:
 
-### What Gets Created
+```bash
+/ci-standards ci
+```
 
-**CI/CD Workflow** (`.github/workflows/deploy.yml`):
-- 3-job pattern: resolve-env → ci-gate → deploy
-- Branch→environment mapping (development/staging/main)
-- TypeScript type checking
-- Automated Cloudflare Workers deployment
+### Generate documentation only:
 
-**Documentation**:
-- `CLAUDE.md` - Project overview for AI assistants
-- `docs/AI_AGENT_GUIDE.md` - Operational guide with critical rules
+```bash
+/ci-standards docs
+```
 
-**Configuration**:
-- TypeScript configs (tsconfig.json, tsconfig.worker.json)
-- Wrangler configuration (wrangler.toml)
-- Node version file (.nvmrc)
+### View DORA metrics:
 
-## Critical Standards
+```bash
+/ci-metrics
+/ci-metrics --range 90d
+```
 
-All generated files follow these principles:
+### Analyze project (report only):
 
-### CI/CD Rules
-- ❌ **NEVER** use `continue-on-error: true`
-- ✅ **ALWAYS** use Node 22
-- ✅ **ALWAYS** use 3-job pattern
-- ❌ **NEVER** enable `workers_dev` subdomain
-- ✅ **ALWAYS** run typecheck before deploy
-- ✅ **ALWAYS** map branches to environments
-
-### Documentation Rules
-- 📋 Include critical rules section
-- 📋 Document common tasks
-- 📋 Provide troubleshooting steps
-- 📋 List exact file paths
-- 📋 Include working code examples
+```bash
+/ci-standards analyze
+```
 
 ## Installation
 
-This plugin is installed at: `~/.claude/plugins/ci-standards/`
+### From nupraxus marketplace:
 
-It's automatically available in all Claude Code sessions.
+```bash
+# Add marketplace (one-time)
+/plugin marketplace add nupraxus/claude-plugins-marketplace
+
+# Install plugin
+/plugin install ci-standards@nupraxus-plugins
+```
+
+### Manual installation:
+
+```bash
+# Clone to plugins directory
+git clone https://github.com/nupraxus/ci-standards-plugin.git ~/.claude/plugins/ci-standards
+```
 
 ## Components
 
-### Command
-- `/ci-standards` - Interactive setup workflow
-
-### Skills
-- `ci-patterns` - CI/CD workflow knowledge
-- `project-types` - Project architecture patterns
-- `ai-documentation` - AI agent documentation standards
+### Commands
+- `/ci-standards` — Interactive setup workflow (full, ci, docs, analyze, metrics)
+- `/ci-metrics` — DORA metrics dashboard with configurable range
 
 ### Agents
-- `project-analyzer` - Detects project type and configuration
-- `workflow-generator` - Generates standardized GitHub Actions workflow
-- `docs-generator` - Creates AI agent documentation
+- `project-analyzer` — Detects project type and configuration across 7 architectures
+- `workflow-generator` — Generates standardized GitHub Actions workflows
+- `docs-generator` — Creates AI agent documentation (CLAUDE.md + AI_AGENT_GUIDE.md)
+- `metrics-tracker` — Calculates DORA metrics from GitHub Actions data
 
-## Examples
+### Skills
+- `ci-patterns` — CI/CD workflow knowledge and patterns
+- `project-types` — Project architecture patterns (7 types)
+- `ai-documentation` — AI agent documentation standards
+- `enforcement-rules` — Codified rules with severity levels
+- `dora-metrics` — DORA metric definitions and benchmarks
 
-### Full Setup (New Project)
-```bash
-/ci-standards
-→ Select: Full setup (CI/CD + docs + TypeScript)
-→ Confirm project type
-→ Review changes
-→ Apply
-```
+### Hooks
+- `validate-ci-config.sh` — Pre-write validator (blocks CRITICAL violations)
+- `session-audit.sh` — Session start compliance audit (informational)
 
-### Update CI/CD Only
-```bash
-/ci-standards
-→ Select: CI/CD only
-→ Review workflow diff
-→ Apply
-```
+## Enforcement
 
-### Generate Docs Only
-```bash
-/ci-standards
-→ Select: Documentation only
-→ Review generated files
-→ Apply
-```
+The plugin includes enforcement hooks that run automatically:
+
+### Pre-Write Validation
+
+Every `Write` or `Edit` to CI config files is validated:
+
+| File Pattern | Checks |
+|-------------|--------|
+| `.github/workflows/*.yml` | No continue-on-error, Node 22, 3-job pattern, timeouts |
+| `wrangler.toml` | No workers_dev = true |
+| `wrangler.jsonc` | No workers_dev: true |
+
+**CRITICAL** violations block the write. **WARNING** violations allow the write with a message.
+
+### Session Audit
+
+On session start, the plugin scans the project and reports:
+- Compliance score (percentage)
+- Existing violations
+- Missing required files
+- Recommendations
+
+## DORA Metrics
+
+Track your software delivery performance with the four DORA metrics:
+
+| Metric | Elite | High | Medium | Low |
+|--------|-------|------|--------|-----|
+| Deploy Frequency | On-demand | Daily-Weekly | Weekly-Monthly | <Monthly |
+| Lead Time | <1 hour | 1d-1w | 1w-1m | >1 month |
+| Failure Rate | <5% | 5-10% | 10-15% | >15% |
+| MTTR | <1 hour | <1 day | 1d-1w | >1 week |
+
+Requires the GitHub CLI (`gh`) to be installed and authenticated.
 
 ## Version History
 
-- **1.0.0** - Initial release
-  - GitHub Actions + Cloudflare Workers
-  - 3 project types (React+Vite, Next.js, Hono)
-  - TypeScript always enabled
-  - Comprehensive AI documentation
+- **2.0.0** — Enforcement hooks, DORA metrics, 7 project types, marketplace distribution
+- **1.0.0** — Initial release: generation-only, 3 project types
+
+See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ## License
 
-MIT License - Use freely in any project.
+MIT License — Use freely in any project.
 
 ## Author
 
-Roger Emerson (roger@echeloncapital.group)
+Roger Emerson — [nupraxus](https://github.com/nupraxus)

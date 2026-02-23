@@ -16,3 +16,9 @@ Thumbs.db
 # Test artifacts
 *.test.js
 coverage/
+
+# Firebase
+firebase-debug.log
+
+# Local settings
+.claude/settings.local.json
