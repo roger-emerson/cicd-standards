@@ -221,7 +221,7 @@ This guide provides detailed instructions for AI agents working on [Project Name
 - **Project Type**: [type]
 - **Framework**: [framework] v[version]
 - **Primary Language**: TypeScript
-- **Package Manager**: npm
+- **Package Manager**: [npm | pnpm] (detected from lockfile)
 - **Node Version**: [from package.json engines if available]
 
 ## Getting Started
@@ -231,22 +231,25 @@ This guide provides detailed instructions for AI agents working on [Project Name
 
 ### Initial Setup
 ```bash
-[Step-by-step setup commands]
-npm install
+[Step-by-step setup commands — use detected package manager]
+[npm]: npm install
+[pnpm]: pnpm install
 [Any additional setup steps]
 ```
 
 ### Development Workflow
 ```bash
 # Start dev server
-npm run dev
+[pm] run dev
 
 # Run tests
-npm run test
+[pm] run test
 
 # Lint code
-npm run lint
+[pm] run lint
 ```
+
+Replace `[pm]` with the detected package manager (`npm` or `pnpm`).
 
 ## Architecture Overview
 
@@ -394,11 +397,14 @@ npm run build
 
 ### Updating Dependencies
 ```bash
-npm update
+[npm]: npm update
+[pnpm]: pnpm update
 # Test thoroughly after updates
-npm run test
-npm run build
+[pm] run test
+[pm] run build
 ```
+
+Replace `[pm]` with the detected package manager (`npm` or `pnpm`).
 
 ## Troubleshooting
 

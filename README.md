@@ -213,6 +213,7 @@ Files that are not CI configuration (your application code, documentation, etc.)
 - A compliance score (percentage of checks passing)
 - Any existing violations in your workflow files
 - Missing recommended files (like `.nvmrc` or `CLAUDE.md`)
+- Package manager consistency (workflow cache strategy matches your lockfile)
 - Actionable recommendations
 
 This is informational only. It never blocks anything.
@@ -254,6 +255,14 @@ Static-first sites with optional server-side features via Pages Functions. Deplo
 **Detection:** Has `astro`, `solid-start`, or `@remix-run/cloudflare-pages` in package.json.
 
 **Deploy command:** `npx wrangler pages deploy dist`
+
+#### Next.js Static Export
+
+Next.js projects using `output: "export"` (without OpenNext) produce static files and are classified as Cloudflare Pages projects, not Next.js + OpenNext.
+
+**Detection:** Has `next` in package.json, `output: "export"` in next.config, and NO `@opennextjs/cloudflare` dependency.
+
+**Deploy command:** `npx wrangler pages deploy out`
 
 ### 5. Workers + Durable Objects
 
@@ -342,6 +351,12 @@ cicd-standards/
 │   ├── ai-documentation/SKILL.md # Documentation standards
 │   ├── enforcement-rules/SKILL.md # 9 codified rules (RULE-001 to 009)
 │   └── dora-metrics/SKILL.md    # DORA metric definitions and benchmarks
+├── templates/
+│   └── workflows/
+│       ├── workers.yml             # Workers deploy template
+│       ├── nextjs-opennext.yml     # Next.js + OpenNext template
+│       ├── pages.yml               # Cloudflare Pages template
+│       └── generic.yml             # Non-Cloudflare fallback template
 ├── hooks/
 │   ├── hooks.json               # Hook registration (triggers and timing)
 │   ├── validate-ci-config.sh    # Pre-write validator (blocks violations)
@@ -361,6 +376,8 @@ cicd-standards/
 
 **Hooks** are automatic triggers. They run without you asking. The pre-write hook validates files on every write. The session-audit hook scans your project on startup.
 
+**Templates** are literal YAML files with `{{VARIABLE}}` placeholders. The workflow-generator agent reads these templates and substitutes variables based on your project type and package manager. This ensures every generated workflow follows the exact same structure — the canonical 3-job pattern — regardless of which project type you are using.
+
 ---
 
 ## Enforcement Rules Reference
@@ -375,7 +392,7 @@ Nine rules are codified, each with a severity level that determines behavior:
 | RULE-004 | Use 3-job workflow pattern | WARNING | Write allowed, message shown |
 | RULE-005 | All jobs must have timeouts | WARNING | Write allowed, message shown |
 | RULE-006 | No matrix testing strategy | WARNING | Write allowed, message shown |
-| RULE-007 | Typecheck must run in CI gate | INFO | Reported at session audit |
+| RULE-007 | Typecheck must run in CI gate (`npm run typecheck` or `pnpm run typecheck`) | INFO | Reported at session audit |
 | RULE-008 | `.nvmrc` must be present | INFO | Reported at session audit |
 | RULE-009 | AI documentation must exist | INFO | Reported at session audit |
 
@@ -393,7 +410,7 @@ Nine rules are codified, each with a severity level that determines behavior:
 
 **RULE-006 (no matrix):** Testing against multiple Node versions (18, 20, 22) triples CI time for no benefit when the deployment target is always Node 22.
 
-**RULE-007 (typecheck):** Running `npm run typecheck` in the CI gate catches type errors at build time instead of runtime. This is one of the highest-value quality gates you can add.
+**RULE-007 (typecheck):** Running typecheck (`npm run typecheck` or `pnpm run typecheck`) in the CI gate catches type errors at build time instead of runtime. This is one of the highest-value quality gates you can add. The command should match your project's package manager.
 
 **RULE-008 (.nvmrc):** Ensures local development uses the same Node version as CI, preventing "works on my machine" issues.
 
@@ -420,7 +437,7 @@ The plugin analyzes the current working directory. In a monorepo, navigate to th
 It is a GitHub Actions workflow structure with three sequential jobs:
 
 1. **resolve-env** (1 min) — Reads the branch name and outputs which environment to deploy to (development, staging, or production).
-2. **ci-gate** (5 min) — Runs `npm ci`, `npm run typecheck`, and `npm run build` to validate code quality.
+2. **ci-gate** (5 min) — Installs dependencies (`npm ci` or `pnpm install --frozen-lockfile`), runs typecheck, and runs a build check to validate code quality. The exact commands match your project's package manager.
 3. **deploy** (10 min) — Deploys to the target environment using the appropriate command for your project type.
 
 Each job depends on the previous one. If typecheck fails, deployment never runs.

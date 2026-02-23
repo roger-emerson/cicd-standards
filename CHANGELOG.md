@@ -2,6 +2,35 @@
 
 All notable changes to the cicd-standards plugin will be documented in this file.
 
+## [2.1.0] - 2026-02-23
+
+### Added
+
+**Deterministic Workflow Generation (Template-First)**
+- `templates/workflows/workers.yml` — Literal YAML template for Cloudflare Workers projects (react-vite, hono, workers-do, workers-r2)
+- `templates/workflows/nextjs-opennext.yml` — Literal YAML template for Next.js + OpenNext projects
+- `templates/workflows/pages.yml` — Literal YAML template for Cloudflare Pages projects (including Next.js static export)
+- `templates/workflows/generic.yml` — Literal YAML template for non-Cloudflare projects
+- All templates use `{{VARIABLE}}` placeholders substituted by the workflow-generator agent
+- Templates enforce the canonical 3-job pattern (resolve-env → ci-gate → deploy) by construction
+
+**Package Manager Support**
+- Automatic detection of npm vs pnpm via lockfile presence (pnpm-lock.yaml → pnpm, package-lock.json → npm)
+- Package manager substitution variables: `{{PM_CACHE}}`, `{{PM_INSTALL}}`, `{{PM_RUN}}`, `{{PM_EXEC}}`, `{{PNPM_SETUP_STEP}}`
+- Session audit now checks package manager consistency (warns if workflow cache doesn't match lockfile)
+
+**Next.js Static Export Detection**
+- Projects with `output: "export"` in next.config (without `@opennextjs/cloudflare`) classified as `pages`, not `nextjs`
+- Uses `templates/workflows/pages.yml` with `{{OUTPUT_DIR}}` set to `out`
+
+### Changed
+- `agents/workflow-generator.md` — Added "CRITICAL: Template-First Generation" section that overrides prose-based generation with read-template-and-substitute approach
+- `agents/project-analyzer.md` — Added Next.js static export detection logic and package manager detection step with output format
+- `hooks/session-audit.sh` — Added package manager consistency check between lockfile and workflow cache strategy
+- `skills/ci-patterns/SKILL.md` — Added template files reference table and pnpm variant section
+- `skills/project-types/SKILL.md` — Added Next.js Static Export as a subtype under Cloudflare Pages
+- `skills/enforcement-rules/SKILL.md` — Updated RULE-007 to accept both `npm run typecheck` and `pnpm run typecheck`
+
 ## [2.0.0] - 2026-02-22
 
 ### Added

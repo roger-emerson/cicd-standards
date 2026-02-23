@@ -19,7 +19,7 @@ Analyze the current project and set up standardized CI/CD workflows and AI agent
 ## What This Command Does
 
 1. **Analyzes** the current project to determine:
-   - Project type (React+Vite, Next.js, Hono, or unknown)
+   - Project type (React+Vite, Next.js+OpenNext, Next.js Static Export, Hono, Pages, Workers+DO, Workers+R2, Generic, or unknown)
    - Existing configuration
    - What needs to be created/updated
 
@@ -58,7 +58,8 @@ Description: "Analyze project structure and configuration"
 ```
 
 The agent will return a project analysis report including:
-- Project type (react-vite, nextjs, hono, unknown)
+- Project type (react-vite, nextjs, hono, pages, workers-do, workers-r2, generic, unknown)
+- Package manager (npm, pnpm) with lockfile evidence
 - Detected dependencies and frameworks
 - Existing CI/CD configuration
 - Missing standardized files
@@ -82,6 +83,8 @@ Options:
 ### Step 3: Dispatch Appropriate Agents
 
 Based on user selection, dispatch one or more agents:
+
+**Note:** The workflow-generator agent uses literal YAML template files from `templates/workflows/` and substitutes variables based on project type and detected package manager. This ensures deterministic output matching the canonical 3-job pattern.
 
 **For "Full setup" or "CI only":**
 ```
