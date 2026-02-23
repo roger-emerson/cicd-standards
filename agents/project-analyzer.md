@@ -65,6 +65,22 @@ Start by reading these files (handle missing files gracefully):
    - Check if present and what version is specified
    - Should be Node 22 for standards compliance
 
+## Step 1b: Detect Package Manager
+
+Determine the package manager by checking for lockfiles in the project root:
+
+1. **pnpm-lock.yaml** → pnpm
+2. **package-lock.json** → npm
+3. **yarn.lock** → yarn (note: treated as npm for workflow generation purposes)
+4. **No lockfile found** → default to npm
+
+Use Glob to check for lockfiles:
+```
+Glob: {pnpm-lock.yaml,package-lock.json,yarn.lock}
+```
+
+Include the result in the analysis report (see output format below).
+
 ## Step 2: Detect Project Type with High Confidence
 
 Use this decision tree:
@@ -89,6 +105,20 @@ Use this decision tree:
 - Build script mentions "next build"
 
 **Confidence:** HIGH if 4+ indicators, MEDIUM if 3 indicators
+
+### Next.js Static Export (Cloudflare Pages)
+**Primary indicators (need 3+):**
+- `package.json` has "next" dependency
+- `next.config.ts`, `next.config.js`, or `next.config.mjs` contains `output: "export"`
+- NO `@opennextjs/cloudflare` dependency in package.json
+- Static output directory present or configured (typically `out/`)
+- May have `wrangler.toml` with `pages_build_output_dir` or no wrangler config at all
+
+**Confidence:** HIGH if 4+ indicators, MEDIUM if 3 indicators
+
+**Classification:** `pages` (NOT `nextjs`) — static export doesn't use OpenNext; it produces static files suitable for Cloudflare Pages deployment.
+
+**Distinguishing from Next.js + OpenNext:** The critical differentiator is the absence of `@opennextjs/cloudflare` combined with `output: "export"` in next.config. If OpenNext is present, classify as `nextjs` (full SSR). If `output: "export"` without OpenNext, classify as `pages` (static).
 
 ### Hono + Cloudflare Workers
 **Primary indicators (need 2+):**
@@ -228,6 +258,11 @@ Provide your analysis in this structured format:
 - [List key indicators found]
 - [e.g., "Found vite and react dependencies in package.json"]
 - [e.g., "Located functions/ directory with worker code"]
+
+### Package Manager
+**Detected:** [npm | pnpm | yarn]
+**Evidence:** [pnpm-lock.yaml found | package-lock.json found | yarn.lock found | no lockfile (defaulting to npm)]
+**Lockfile:** [path to lockfile, or "none"]
 
 ### Current Configuration
 

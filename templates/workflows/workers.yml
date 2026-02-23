@@ -1,0 +1,104 @@
+name: Deploy
+
+on:
+  push:
+    branches: [development, staging, main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Resolve environment from branch name
+  # ─────────────────────────────────────────────────────────────────────────────
+  resolve-env:
+    name: Resolve Environment
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+    steps:
+      - name: Map branch to environment
+        id: env
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          case "$BRANCH" in
+            development)
+              echo "environment=development" >> "$GITHUB_OUTPUT"
+              ;;
+            staging)
+              echo "environment=staging"     >> "$GITHUB_OUTPUT"
+              ;;
+            main)
+              echo "environment=production"  >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "::error::Unsupported branch: $BRANCH"
+              exit 1
+              ;;
+          esac
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # CI gate — typecheck + build
+  # ─────────────────────────────────────────────────────────────────────────────
+  ci-gate:
+    name: CI Gate
+    needs: resolve-env
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+{{PNPM_SETUP_STEP}}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "{{PM_CACHE}}"
+
+      - run: {{PM_INSTALL}}
+
+      - name: Type check
+        run: {{PM_RUN}} typecheck
+
+      - name: Build check
+        run: {{PM_RUN}} build
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Deploy Worker
+  # ─────────────────────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy Worker (${{ needs.resolve-env.outputs.environment }})
+    needs: [resolve-env, ci-gate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ needs.resolve-env.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+
+{{PNPM_SETUP_STEP}}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "{{PM_CACHE}}"
+
+      - run: {{PM_INSTALL}}
+
+      - name: Build application
+        run: {{PM_RUN}} build
+
+      - name: Deploy to Cloudflare Workers
+        run: |
+          if [ "${{ needs.resolve-env.outputs.environment }}" = "development" ]; then
+            {{PM_EXEC}} wrangler deploy --env development
+          else
+            {{PM_EXEC}} wrangler deploy
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

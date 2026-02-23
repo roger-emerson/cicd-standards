@@ -98,6 +98,20 @@ Understand the three supported project architectures for Cloudflare Workers depl
 - Pages Functions for API routes
 - Automatic preview deployments on PRs
 
+#### Subtype: Next.js Static Export
+
+Next.js projects using `output: "export"` (without OpenNext) produce static HTML/CSS/JS files — functionally identical to any other static site generator. These are classified as **pages**, not **nextjs**.
+
+**Detection logic**:
+- `package.json` has `next` dependency
+- `next.config.ts/js/mjs` has `output: "export"`
+- NO `@opennextjs/cloudflare` dependency
+- Output directory is typically `out/`
+
+**Why pages, not nextjs?** The `nextjs` classification is reserved for full SSR via OpenNext. Static export produces plain files with no server-side rendering — it's deployed the same way as Astro or Vite: `wrangler pages deploy out/`.
+
+**Template**: Uses `templates/workflows/pages.yml` with `{{OUTPUT_DIR}}` set to `out`.
+
 ### 5. Workers + Durable Objects
 
 **Best for**: Stateful serverless applications requiring consistency guarantees
@@ -664,6 +678,14 @@ project/
 ✓ package.json has "@astrojs/cloudflare" adapter
 ✓ astro.config.mjs/ts exists
 ✓ src/pages/ directory exists
+```
+
+**Cloudflare Pages (Next.js Static Export)**:
+```bash
+✓ package.json has "next" dependency
+✓ next.config.ts/js/mjs has output: "export"
+✗ NO @opennextjs/cloudflare dependency
+✓ Output directory is out/
 ```
 
 **Cloudflare Pages (SolidStart/Remix)**:

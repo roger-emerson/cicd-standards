@@ -142,13 +142,21 @@ workers_dev = false  # ✅ Always false
 **Checked at:** Session audit only
 **Severity:** INFO
 
-**Why:** `npm run typecheck` must run in the ci-gate job before deployment. Catches type errors at build time instead of runtime.
+**Why:** A typecheck command must run in the ci-gate job before deployment. Catches type errors at build time instead of runtime. Both `npm run typecheck` and `pnpm run typecheck` are valid — the command should match the project's package manager.
 
-**Expected:**
+**Expected (npm projects):**
 ```yaml
 - name: Type check
   run: npm run typecheck
 ```
+
+**Expected (pnpm projects):**
+```yaml
+- name: Type check
+  run: pnpm run typecheck
+```
+
+**Validation:** Check for the presence of either `npm run typecheck` or `pnpm run typecheck` in the workflow. Either satisfies this rule.
 
 ---
 

@@ -8,6 +8,19 @@ version: 2.0.0
 
 Master the standardized 3-job workflow pattern for deploying to Cloudflare Workers via GitHub Actions.
 
+## Template Files (Source of Truth)
+
+The canonical workflow YAML lives in `templates/workflows/`. These are literal template files with `{{VARIABLE}}` placeholders — the workflow-generator agent reads and substitutes them rather than generating YAML from scratch.
+
+| Template | Project Types |
+|----------|--------------|
+| `templates/workflows/workers.yml` | react-vite, hono, workers-do, workers-r2 |
+| `templates/workflows/nextjs-opennext.yml` | nextjs (with OpenNext) |
+| `templates/workflows/pages.yml` | pages, nextjs-static |
+| `templates/workflows/generic.yml` | non-Cloudflare |
+
+All templates share identical `resolve-env` and `ci-gate` jobs — only the deploy job differs.
+
 ## Core Pattern: 3-Job Workflow
 
 All CI/CD workflows follow this exact structure:
@@ -243,6 +256,42 @@ deploy:
    # BAD
    wrangler deploy      # ❌ Uses globally installed version
    ```
+
+## Package Manager Variants
+
+The 3-job pattern supports both npm and pnpm. The template variables handle the differences:
+
+### npm variant (default)
+```yaml
+# No pnpm setup step needed
+- uses: actions/setup-node@v4
+  with:
+    node-version: ${{ env.NODE_VERSION }}
+    cache: "npm"
+- run: npm ci
+- name: Type check
+  run: npm run typecheck
+- name: Build check
+  run: npm run build
+```
+
+### pnpm variant
+```yaml
+- uses: pnpm/action-setup@v4
+  with:
+    version: latest
+- uses: actions/setup-node@v4
+  with:
+    node-version: ${{ env.NODE_VERSION }}
+    cache: "pnpm"
+- run: pnpm install --frozen-lockfile
+- name: Type check
+  run: pnpm run typecheck
+- name: Build check
+  run: pnpm run build
+```
+
+**Detection**: Check for `pnpm-lock.yaml` in project root. If present, use pnpm variant. Otherwise, use npm.
 
 ## Workflow Configuration
 

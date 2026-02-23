@@ -59,6 +59,37 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Check package manager consistency
+# ─────────────────────────────────────────────────────────────────────────────
+DETECTED_PM="npm"
+if [ -f "$PROJECT_DIR/pnpm-lock.yaml" ]; then
+  DETECTED_PM="pnpm"
+elif [ -f "$PROJECT_DIR/yarn.lock" ]; then
+  DETECTED_PM="yarn"
+fi
+
+if [ -n "$WORKFLOW_FILES" ]; then
+  for WF in $WORKFLOW_FILES; do
+    WF_NAME=$(basename "$WF")
+
+    # Check if workflow cache strategy matches detected package manager
+    if [ "$DETECTED_PM" = "pnpm" ]; then
+      if grep -q 'cache: "npm"' "$WF" 2>/dev/null; then
+        WARNINGS+=("$WF_NAME: uses npm cache but project uses pnpm (pnpm-lock.yaml found)")
+      elif grep -q 'cache: "pnpm"' "$WF" 2>/dev/null; then
+        COMPLIANT+=("$WF_NAME: cache matches package manager (pnpm)")
+      fi
+    elif [ "$DETECTED_PM" = "npm" ]; then
+      if grep -q 'cache: "pnpm"' "$WF" 2>/dev/null; then
+        WARNINGS+=("$WF_NAME: uses pnpm cache but project uses npm (package-lock.json found)")
+      elif grep -q 'cache: "npm"' "$WF" 2>/dev/null; then
+        COMPLIANT+=("$WF_NAME: cache matches package manager (npm)")
+      fi
+    fi
+  done
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Check Wrangler configuration
 # ─────────────────────────────────────────────────────────────────────────────
 if [ -f "$PROJECT_DIR/wrangler.toml" ]; then
